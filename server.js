@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 
 const url = 'mongodb://mmallum:abc123@se-test.ddns.net:27017/soccer_roster';
 const dbName = 'soccer_roster';
@@ -42,6 +46,11 @@ const insertDocuments = function(db, callback) {
 // When client connects, send "Hello World"
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/" + "home.html");
+});
+
+app.post('/new-player', function(req, res) {
+   console.log(req.body);
+   res.redirect('/');
 });
 
 // Server listen on port 80
