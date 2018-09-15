@@ -5,6 +5,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(express.static('.'));
 
 const url = 'mongodb://mmallum:abc123@se-test.ddns.net:27017/soccer_roster';
 const dbName = 'soccer_roster';
