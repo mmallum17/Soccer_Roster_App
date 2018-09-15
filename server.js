@@ -8,48 +8,55 @@ app.use(bodyParser.urlencoded({ extended: true}));
 
 const url = 'mongodb://mmallum:abc123@se-test.ddns.net:27017/soccer_roster';
 const dbName = 'soccer_roster';
+let db;
 
 MongoClient.connect(url, function(err, client) {
-    console.log(err);
-    const db = client.db(dbName);
-    client.close();
-    /*insertDocuments(db, function() {
-        findDocuments(db, function(){
-            client.close();
-        });
-    });*/
+    if(err !== null) {
+        console.log(err);
+    }
+    db = client.db(dbName);
 });
 
-const findDocuments = function(db, callback) {
+const insertDocument = function(collectionName, document) {
+    console.log(document);
     // Get the documents collection
-    const collection = db.collection('documents');
-    // Find some documents
-    collection.find({}).toArray(function(err, docs) {
-        console.log("Found the following records");
-        console.log(docs);
-        callback(docs);
+    const collection = db.collection(collectionName);
+    // Insert the document
+    collection.insertOne(document, function(err, res) {
+       if(err) {
+           console.log(err);
+       }
+       console.log("New Player Added");
     });
 };
 
-const insertDocuments = function(db, callback) {
-    // Get the documents collection
-    const collection = db.collection('documents');
-    // Insert some documents
-    collection.insertMany([
-        {a : 1}, {a : 2}, {a : 3}
-    ], function(err, result) {
-        console.log("Inserted 3 documents into the collection");
-        callback(result);
-    });
-};
-
-// When client connects, send "Hello World"
+// When client connects, send home page
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/" + "home.html");
 });
 
+app.get('/all-players', function(req, res) {
+    // Get the documents collection
+    const collection = db.collection('players');
+    // Find some documents
+    collection.find({}).toArray(function(err, docs) {
+        console.log("Found the following records");
+        console.log(docs);
+        res.send(docs);
+    });
+});
+
 app.post('/new-player', function(req, res) {
-   console.log(req.body);
+   //console.log(req.body);
+   let newPlayer = {
+       firstName: req.body.firstName,
+       lastName: req.body.lastName,
+       position: req.body.playerPosition,
+       jerseyNumber: parseInt(req.body.jerseyNumber),
+       height: parseInt(req.body.heightFeet) * 12 + parseInt(req.body.heightInches),
+       weight: parseInt(req.body.playerWeight)
+   };
+   insertDocument('players', newPlayer);
    res.redirect('/');
 });
 
