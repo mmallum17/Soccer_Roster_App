@@ -14,12 +14,15 @@ xhttp.onreadystatechange = function() {
           let playerHeightCell = row.insertCell(4);
           let playerWeightCell = row.insertCell(5);
 
+          let height = parseInt(jsonResponse[i].height);
+
+
           firstNameCell.innerHTML = jsonResponse[i].firstName;
           lastNameCell.innerHTML = jsonResponse[i].lastName;
           playerPositionCell.innerHTML = jsonResponse[i].position;
           jerseyNumberCell.innerHTML = jsonResponse[i].jerseyNumber;
-          playerHeightCell.innerHTML = jsonResponse[i].height;
-          playerWeightCell.innerHTML = jsonResponse[i].weight;
+          playerHeightCell.innerHTML = Math.trunc(height / 12) + "'" + height % 12 + '"';
+          playerWeightCell.innerHTML = jsonResponse[i].weight + ' lbs';
       }
   }
 };
